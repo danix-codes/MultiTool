@@ -16,6 +16,7 @@ import getpass
 import itertools
 from smbprotocol.connection import Connection
 from smbprotocol.session import Session
+from pathlib import Path
 
 
 logo = """
@@ -284,6 +285,10 @@ def smb_bruteforce(ip, uzivatel, heslo, pocet):
         if vysledek.returncode == 0:
             print(f"\nHeslo bylo nalezeno! {heslo}")
             subprocess.run(['net', 'use', f'\\\\{ip}', '/d', '/y'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            smb_heslo = Path("smb_heslo.txt")
+            with smb_heslo.open("w") as soubor:
+                soubor.write(f"IP: {ip}\nUživatel: {uzivatel}\nHeslo: {heslo}")
+            print(f"Heslo bylo uloženo do souboru: {smb_heslo}")
             return True
     except Exception as e:
         print(f"Chyba během pokusu: {e}")
